@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 const toWei = (num) => ethers.utils.parseEther(num.toString());
-const fromWei = (um) => ethers.utils.formatEther(num);
+const fromWei = (num) => ethers.utils.formatEther(num);
 // 1 ether = 10^18 Wei
 describe("MusicNFTMarketplace", function () {
   let nftMarketplace;
@@ -20,7 +20,7 @@ describe("MusicNFTMarketplace", function () {
     toWei(7),
     toWei(8),
   ];
-  let deploymentFee = toWei(prices.length * 0.01);
+  let deploymentFee = toWei(prices.length * 0.01); // How is it the deployment Fees
   beforeEach(async function () {
     const NFTMarketplaceFactory = await ethers.getContractFactory(
       "MusicNFTMarketplace"
@@ -62,6 +62,23 @@ describe("MusicNFTMarketplace", function () {
       expect(await ethers.provider.getBalance(nftMarketplace.address)).to.equal(
         deploymentFee
       );
+    });
+  });
+  describe("Updating Royalty Fee", function () {
+    it("Only deployer can update the Royalty Fee", async function () {
+      const fee = toWei(0.02);
+      await nftMarketplace.updateRoyaltyFee(fee);
+      //   await expect(
+      //     nftMarketplace.connect(user1).updateRoyaltyFee(fee)
+      //   ).to.be.revertedWith("Ownable : caller is not the owner");
+      expect(await nftMarketplace.royaltyFee()).to.equal(fee);
+    });
+  });
+
+  describe("Buying Tokens", function () {
+    it("Should update seller to zero address, pay seller, pay royalty fee to artist and emit marketbouughtitem event adn transfer NFT", async function () {
+      const deployerInitialEthBalance = await deployer.getBalance();
+      const artistInitialBalance = await artist.getBalance();
     });
   });
 });
